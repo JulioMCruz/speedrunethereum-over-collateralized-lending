@@ -82,6 +82,29 @@ export default deployScript(
         value: parseEther("1000000"),
         account: deployer,
       });
+    } else {
+      // Seed live testnets with enough CORN and DEX liquidity for the public demo.
+      await env.execute(cornToken, {
+        functionName: "mintTo",
+        args: [lending.address, parseEther("100000")],
+        account: deployer,
+      });
+      await env.execute(cornToken, {
+        functionName: "mintTo",
+        args: [deployer, parseEther("50")],
+        account: deployer,
+      });
+      await env.execute(cornToken, {
+        functionName: "approve",
+        args: [cornDEX.address, parseEther("50")],
+        account: deployer,
+      });
+      await env.execute(cornDEX, {
+        functionName: "init",
+        args: [parseEther("50")],
+        value: parseEther("0.05"),
+        account: deployer,
+      });
     }
   },
   { tags: ["Lending"] },
